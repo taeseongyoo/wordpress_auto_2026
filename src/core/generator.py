@@ -255,32 +255,44 @@ class ContentGenerator:
 
     def _generate_section(self, topic: str, section_title: str, keyword: str, links: list = None) -> str:
         
-        link_instruction = ""
+        # 내부 링크: 오직 검증된 URL만 사용 (404 방지)
+        internal_link_instruction = "[내부 링크 없음]"
         if links:
             link_list_str = "\n".join([f"- URL: {l['link']}, 제목: {l['title']}" for l in links])
-            link_instruction = f"""
-            [내부 링크 필독 사항]
-            다음 링크 중 1~2개를 본문 내용과 자연스럽게 이어지는 부분에 삽입하세요.
-            - 링크 정보:
+            internal_link_instruction = f"""
+            [내부 링크 - 필독]
+            ⚠️ 아래 제공된 URL만 사용하세요. 절대로 URL을 상상하거나 만들어내지 마세요!
+            - 검증된 링크:
             {link_list_str}
-            - 작성 법: 문맥에 맞게 "관련된 [제목] 글도 확인해보세요" 또는 문장 내 단어에 하이퍼링크 적용.
-            - 중요: 억지스럽게 넣지 말고, 내용의 흐름상 추가 정보가 필요한 곳에 배치할 것.
+            - 사용법: 문맥에 맞게 1개만 자연스럽게 삽입. (예: "더 자세한 내용은 <a href='...'>[제목]</a>에서 확인하세요")
+            - 중요: 위 목록에 없는 URL은 절대 사용 금지! 404 에러 발생함.
             """
 
         prompt = f"""
         블로그 포스트 '{topic}'의 챕터 '{section_title}' 내용을 상세히 작성하세요.
+        
+        [기본 규칙]
         - 형식: HTML (H2 태그로 제목 시작, 이후 p, ul/ol, strong 등 사용)
         - 내용: 구체적인 정보, 예시, 데이터 포함. 모호한 표현 금지.
         - 키워드 '{keyword}'를 자연스럽게 2회 이상 포함.
-        - **링크 전략**:
-          1. **외부 링크**: 신뢰도 높은 사이트(위키백과, 공공기관 등)의 링크를 1개 이상 포함하되, 링크 텍스트를 `<strong>` 태그로 감싸서 **볼드 처리**하여 시인성을 높일 것. (예: <strong><a href="...">출처</a></strong>)
-          2. **내부 링크 (Contextual Linking)**: {link_instruction}
-        - **가독성 (Mobile Optimized)**: 
-          - 한 문단은 2~3문장 이내로 짧게 끊어서 작성할 것. (모바일 가독성 핵심)
-          - 중요한 핵심 문장이나 키워드는 `<strong>` 태그로 **볼드 처리**하여 강조할 것.
+        
+        [링크 전략 - 매우 중요]
+        1. **외부 링크 (글당 전체 2~5개 제한, 이 섹션에서는 최대 1개)**:
+           - 허용 도메인: 정부기관(.go.kr, .gov), 위키백과, 대형 언론사(조선일보, 중앙일보 등), 공식 통계청
+           - 형식: <strong><a href="실제URL" target="_blank">출처명</a></strong>
+           - ⚠️ 존재하지 않는 URL 사용 금지! 확실한 URL만 사용할 것.
+        
+        2. **내부 링크**:
+           {internal_link_instruction}
+        
+        [가독성 (Mobile Optimized)]
+        - 한 문단은 2~3문장 이내로 짧게 끊어서 작성할 것.
+        - 중요한 핵심 문장이나 키워드는 `<strong>` 태그로 **볼드 처리**하여 강조할 것.
+        
+        [분량 및 형식]
         - 분량: 공백 포함 700자 이상 필수.
-        - 중요: H2 태그에는 '{section_title}'을 그대로 쓸 것.
-        - 금지: 본문 내에 '[이미지 설명]', '그림 1', 'Figure 1' 같은 이미지 관련 텍스트를 절대 쓰지 말 것. 이미지는 별도 로직으로 삽입됨.
+        - H2 태그에는 '{section_title}'을 그대로 쓸 것.
+        - 금지: '[이미지 설명]', '그림 1' 같은 이미지 관련 텍스트 절대 금지.
         - 출력: 순수 HTML (마크다운 ``` 사용 금지).
         """
         response = self.client.chat.completions.create(
