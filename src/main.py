@@ -188,7 +188,8 @@ def main():
         categories=category_ids,
         tags=tag_ids,
         featured_media_id=featured_media_id,
-        meta_input=meta_input
+        meta_input=meta_input,
+        slug=post_data.get("slug")  # 영문 슬러그 명시 전달
     )
 
     if post_link:

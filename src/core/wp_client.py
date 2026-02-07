@@ -81,7 +81,7 @@ class WordPressClient:
 
     def create_post(self, title: str, content: str, status: str = "draft", 
                     categories: list = None, tags: list = None, featured_media_id: int = None,
-                    meta_input: dict = None) -> Optional[str]:
+                    meta_input: dict = None, slug: str = None) -> Optional[str]:
         """
         새로운 포스트를 생성합니다. (Rank Math 메타데이터 지원)
         
@@ -93,6 +93,7 @@ class WordPressClient:
             tags (list): 태그 ID 리스트
             featured_media_id (int): 썸네일(특성 이미지) ID
             meta_input (dict): 메타데이터 (Rank Math 필드 포함)
+            slug (str): 영문 슬러그 (URL 고유명)
             
         Returns:
             Optional[str]: 생성된 포스트의 URL
@@ -104,6 +105,10 @@ class WordPressClient:
             "content": content,
             "status": status,
         }
+        
+        # 슬러그 명시 (한글 자동 변환 방지)
+        if slug:
+            data["slug"] = slug
         
         if categories:
             data["categories"] = categories
