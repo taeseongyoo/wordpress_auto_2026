@@ -225,10 +225,10 @@ class ContentGenerator:
         prompt = f"""
         주제 '{topic}'에 대한 블로그 포스트 개요를 JSON으로 작성하세요.
         필수 조건:
-        1. 'focus_keyword': 주제에서 조사를 뺀 핵심 단어.
-        2. 'title': 핵심 키워드가 맨 앞에 오는 매력적인 제목.
-        3. 'slug': 주제와 키워드를 반영한 **영문 슬러그** (hyphen-style). (예: ai-monetization-strategy)
-        4. 'description': 160자 이내의 메타 디스크립션.
+        1. 'focus_keyword': 주제에서 조사를 뺀 핵심 단어 (순수 텍스트만, 특수문자 금지).
+        2. 'title': 핵심 키워드가 맨 앞에 오고, **반드시 '2026'** 같은 연도를 포함한 매력적인 제목.
+        3. 'slug': 주제와 키워드를 반영한 **영문 슬러그** (hyphen-style). (예: ai-monetization-strategy-2026)
+        4. 'description': 160자 이내의 메타 디스크립션. **순수 한글/영문/숫자만 사용.** 마크다운, 특수기호(*, #, 따옴표 등) 절대 금지.
         5. 'sections': 본론 H2 소제목 6~8개 리스트.
         """
         response = self.client.chat.completions.create(
