@@ -277,12 +277,11 @@ class ContentGenerator:
         - 키워드 '{keyword}'를 자연스럽게 2회 이상 포함.
         
         [링크 전략 - 매우 중요]
-        1. **외부 링크 (글당 전체 2~3개 제한, 이 섹션에서는 최대 1개)**:
+        1. **외부 링크 (글당 최소 1개, 최대 3개 / 이 섹션에서 1개 권장)**:
            - 허용 대상: 대형 글로벌 기업(Netflix, Spotify, Google, Amazon 등), 정부기관(.go.kr, .gov), 공식 통계청
            - ⚠️ 위키백과 금지! 산만하고 집중을 방해함.
            - 형식: <strong><a href="실제URL" target="_blank">출처명</a></strong>
            - 존재하지 않는 URL 사용 금지! 확실한 URL만 사용할 것.
-           - 외부 링크 없이 작성해도 됨. 꼭 필요한 경우에만 삽입.
         
         2. **내부 링크**:
            {internal_link_instruction}
