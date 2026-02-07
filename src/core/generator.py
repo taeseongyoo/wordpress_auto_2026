@@ -228,7 +228,7 @@ class ContentGenerator:
         1. 'focus_keyword': 주제의 핵심 단어만 추출. **조사(의, 를, 을, 로써, 에서 등), 접속사, 부사 등 모든 불필요한 단어 완전 배제.** 순수 명사/키워드만. (예: "AI 자동화", "노코드 수익화")
         2. 'title': 핵심 키워드가 맨 앞에 오고, **반드시 '2026'** 같은 연도를 포함한 매력적인 제목.
         3. 'slug': 주제와 키워드를 반영한 **영문 슬러그** (hyphen-style). (예: ai-monetization-strategy-2026)
-        4. 'description': 160자 이내의 메타 디스크립션. **순수 한글/영문/숫자만 사용.** 마크다운, 특수기호(*, #, 따옴표 등) 절대 금지.
+        4. 'description': 160자 이내의 메타 디스크립션. **반드시 '{1}'(Focus Keyword)를 문장 초반에 포함할 것.** 순수 한글/영문/숫자만 사용.
         5. 'sections': 본론 H2 소제목 6~8개 리스트.
         """
         response = self.client.chat.completions.create(
