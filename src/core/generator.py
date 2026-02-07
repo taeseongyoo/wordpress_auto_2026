@@ -228,7 +228,7 @@ class ContentGenerator:
         1. 'focus_keyword': 주제의 핵심 단어만 추출. **조사(의, 를, 을, 로써, 에서 등), 접속사, 부사 등 모든 불필요한 단어 완전 배제.** 순수 명사/키워드만. (예: "AI 자동화", "노코드 수익화")
         2. 'title': 핵심 키워드가 맨 앞에 오고, **반드시 '2026'** 같은 연도를 포함한 매력적인 제목.
         3. 'slug': 주제와 키워드를 반영한 **영문 슬러그** (hyphen-style). (예: ai-monetization-strategy-2026)
-        4. 'description': 160자 이내의 메타 디스크립션. **반드시 '{1}'(Focus Keyword)를 문장 초반에 포함할 것.** 순수 한글/영문/숫자만 사용.
+        4. 'description': 160자 이내의 메타 디스크립션. **무조건 문장의 맨 첫 단어를 '{1}'(Focus Keyword)로 시작할 것.** (예: "AI 수익화는 2026년 가장 중요한...") 순수 한글/영문/숫자만 사용.
         5. 'sections': 본론 H2 소제목 6~8개 리스트.
         """
         response = self.client.chat.completions.create(
@@ -236,7 +236,32 @@ class ContentGenerator:
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_object"}
         )
-        return json.loads(self._clean_html(response.choices[0].message.content))
+        try:
+            outline = json.loads(self._clean_html(response.choices[0].message.content))
+            
+            # [강제 로직] 메타 설명이 포커스 키워드로 시작하지 않으면 강제 주입
+            desc = outline.get("description", "")
+            fk = outline.get("focus_keyword", topic)  # 키워드 없으면 주제 사용
+            
+            # 조사 제거된 순수 키워드만 사용 (예: "AI 수익화는..." -> "AI 수익화")
+            clean_fk = fk.split(" ")[0] if " " in fk else fk 
+            
+            if not desc.startswith(fk):
+                # 기존 설명 앞에 키워드 붙임 (문맥 자연스럽게 연결 시도)
+                new_desc = f"{fk}: {desc}"
+                outline["description"] = new_desc[:160] # 160자 제한
+                logger.info(f"메타 설명 키워드 강제 주입: {outline['description']}")
+                
+            return outline
+        except Exception as e:
+            logger.error(f"개요 생성 실패: {e}")
+            return {
+                "title": f"{topic} 가이드 2026",
+                "focus_keyword": topic,
+                "slug": f"{topic}-2026",
+                "description": f"{topic}: 2026년 최신 트렌드와 전략을 알아보세요.",
+                "sections": ["서론", "주요 내용", "결론"]
+            }
 
     def _generate_intro(self, topic: str, keyword: str) -> str:
         prompt = f"""
