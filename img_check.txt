@@ -1,0 +1,25 @@
+Config Validated
+Post 673 Status: 200
+Content Length: 16431
+Image Tags Found: 3
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-gra...
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-gra...
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-gra...
+Figure Tags Found: 3
+WP Image IDs in content: []
+--------------------
+Post 675 Status: 200
+Content Length: 16412
+Image Tags Found: 0
+Figure Tags Found: 0
+WP Image IDs in content: []
+--------------------
+Post 681 Status: 200
+Content Length: 15755
+Image Tags Found: 3
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-sup...
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-sup...
+ - <img decoding="async" src="https://smart-work-solution.com/wp-content/uploads/2026/02/government-sup...
+Figure Tags Found: 3
+WP Image IDs in content: []
+--------------------

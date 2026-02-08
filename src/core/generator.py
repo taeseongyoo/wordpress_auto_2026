@@ -59,10 +59,16 @@ class ContentGenerator:
             
             # 슬러그: 영문 (구글 SEO 친화적, 인코딩 이슈 해결)
             slug = outline_data.get("slug", "post-slug")
+            
+            # [강제 로직] 슬러그 길이 제한 (75자)
+            if len(slug) > 75:
+                slug = slug[:75].rstrip("-")
+            
             # 만약 개요에서 한글 슬러그가 넘어왔다면 안전하게 변환하거나 그대로 둠 (outline 프롬프트도 수정 필요)
             if not slug or slug == "post-slug":
                 # 비상시 포커스 키워드를 영문으로 변환하는 로직이 없으므로 일단 한글이라도 넣음 (하지만 outline에서 영문 강제할 것임)
                  slug = focus_keyword.replace(" ", "-")
+                 if len(slug) > 75: slug = slug[:75]
             
             description = outline_data.get("description", "")
             sections = outline_data.get("sections", [])

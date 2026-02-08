@@ -1,0 +1,22 @@
+Config Validated
+
+📦 Fetching recent media (100 items)...
+✅ Loaded 100 media items.
+
+🔧 Repairing Post 673 (Slug: government-grants-application-2026)...
+✅ Found 3 Body Images for government-grants-application-2026.
+   -> Inserted Image 1 (ID: 670)
+   -> Inserted Image 2 (ID: 671)
+   -> Inserted Image 3 (ID: 672)
+🎉 Post 673 Updated Successfully!
+
+🔧 Repairing Post 675 (Slug: government-funding-business-plan-2026)...
+✅ Found 0 Body Images for government-funding-business-plan-2026.
+⚠️ No images found! Searching deeper? No, skipping.
+
+🔧 Repairing Post 681 (Slug: government-support-policies-2026)...
+✅ Found 3 Body Images for government-support-policies-2026.
+   -> Inserted Image 1 (ID: 678)
+   -> Inserted Image 2 (ID: 679)
+   -> Inserted Image 3 (ID: 680)
+🎉 Post 681 Updated Successfully!
