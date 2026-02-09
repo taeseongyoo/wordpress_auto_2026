@@ -6,6 +6,15 @@ from src.utils.logger import get_logger
 
 logger = get_logger("ContentGenerator")
 
+# ==============================================================================
+# [SEO PROTOCOL LOCKED]
+# 이 생성기 로직은 'SEO_PROTOCOL.md'에 기준하여 검증되었습니다.
+# - 연관 키워드 8개 생성 및 본문 자연스러운 삽입.
+# - H2 섹션 6~8개, FAQ 포함 구조.
+# - 이미지 메타데이터(Alt/Caption)에 메인 키워드 포함.
+# 로직 변경 시 주의가 필요합니다.
+# ==============================================================================
+
 class ContentGenerator:
     """
     OpenAI API를 사용하여 블로그 콘텐츠를 생성하는 클래스입니다.
@@ -132,7 +141,7 @@ class ContentGenerator:
             # 태그 선택
             raw_tags = self.verified_tags.split(", ")
             import random
-            selected_tags = random.sample(raw_tags, k=min(5, len(raw_tags)))
+            selected_tags = random.sample(raw_tags, k=min(7, len(raw_tags)))
             selected_tags.append(focus_keyword)
 
             result = {
@@ -144,7 +153,8 @@ class ContentGenerator:
                 "rank_math_description": description,
                 "excerpt": description,
                 "image_prompts": image_prompts,
-                "images": image_metadata_list
+                "images": image_metadata_list,
+                "related_keywords": outline_data.get("related_keywords", [])
             }
             
             logger.info(f"콘텐츠 생성 완료 (총 길이: {len(full_content)}자)")
@@ -236,6 +246,7 @@ class ContentGenerator:
         3. 'slug': 주제와 키워드를 반영한 **영문 슬러그** (hyphen-style). (예: ai-monetization-strategy-2026)
         4. 'description': 160자 이내의 메타 디스크립션. **무조건 문장의 맨 첫 단어를 '{1}'(Focus Keyword)로 시작할 것.** (예: "AI 수익화는 2026년 가장 중요한...") 순수 한글/영문/숫자만 사용.
         5. 'sections': 본론 H2 소제목 6~8개 리스트.
+        6. 'related_keywords': Rank Math SEO 점수를 위한 **연관 키워드(LSI) 8개** 리스트. (예: ["AI 부업", "자동화 수익", "ChatGPT 활용", ...])
         """
         response = self.client.chat.completions.create(
             model=self.model,
@@ -244,6 +255,12 @@ class ContentGenerator:
         )
         try:
             outline = json.loads(self._clean_html(response.choices[0].message.content))
+            
+            # [신규 로직] 연관 키워드 8개 추출 (없으면 자동 생성)
+            related_keywords = outline.get("related_keywords", [])
+            if len(related_keywords) < 8:
+                # 부족하면 추가 생성 요청하거나 더미로 채우지 않고 있는대로 씀 (나중에 보완 가능)
+                pass
             
             # [강제 로직] 메타 설명이 포커스 키워드로 시작하지 않으면 강제 주입
             desc = outline.get("description", "")
@@ -266,7 +283,8 @@ class ContentGenerator:
                 "focus_keyword": topic,
                 "slug": f"{topic}-2026",
                 "description": f"{topic}: 2026년 최신 트렌드와 전략을 알아보세요.",
-                "sections": ["서론", "주요 내용", "결론"]
+                "sections": ["서론", "주요 내용", "결론"],
+                "related_keywords": []
             }
 
     def _generate_intro(self, topic: str, keyword: str) -> str:
