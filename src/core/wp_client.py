@@ -243,3 +243,31 @@ class WordPressClient:
                 logger.error(f"태그 처리 실패 ({name}): {e}")
                 
         return tag_ids
+
+    def update_post(self, post_id: int, data: dict) -> Optional[Dict[str, Any]]:
+        """
+        기존 포스트를 수정합니다.
+        
+        Args:
+            post_id (int): 수정할 포스트 ID
+            data (dict): 수정할 데이터 (title, content, slug, status 등)
+            
+        Returns:
+            Optional[Dict[str, Any]]: 수정된 포스트 정보
+        """
+        endpoint = f"{self.base_url}/posts/{post_id}"
+        
+        try:
+            logger.info(f"포스트 수정 시도 ({post_id}): {data.keys()}")
+            response = requests.post(endpoint, auth=self.auth, json=data)
+            response.raise_for_status()
+            
+            result = response.json()
+            logger.info(f"포스트 수정 성공! Link: {result.get('link')}")
+            return result
+
+        except Exception as e:
+            logger.error(f"포스트 수정 실패 ({post_id}): {e}")
+            if 'response' in locals() and response.status_code != 200:
+                logger.error(f"응답 내용: {response.text}")
+            return None
