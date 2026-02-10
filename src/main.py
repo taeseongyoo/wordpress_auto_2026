@@ -8,6 +8,15 @@ from src.utils.logger import get_logger
 
 logger = get_logger("Main")
 
+# ==============================================================================
+# [SEO PROTOCOL LOCKED]
+# 이 파일의 로직은 'SEO_PROTOCOL.md'에 정의된 'Perfect Test (Score 87+)' 기준을 따릅니다.
+# 1. Rank Math Focus Keyword: 오직 1개의 메인 키워드만 설정 (강제).
+# 2. 이미지: 최소 4장 (썸네일 1 + 본문 3) 필수 생성.
+# 3. 콘텐츠: 글자수 2000자 이상, 내부/외부 링크 분배.
+# 수정을 원할 경우 반드시 프로토콜 문서를 먼저 검토하세요.
+# ==============================================================================
+
 def main():
     parser = argparse.ArgumentParser(description="WordPress Automation System v1.0")
     parser.add_argument("topic", type=str, nargs='?', help="블로그 포스트 주제")
@@ -58,11 +67,15 @@ def main():
     # 3. 카테고리 자동 매핑
     # 2: 정책 & 지원금, 86: AI 수익화 & 스마트워크
     category_ids = [86] # 기본값: AI 수익화
-    if any(keyword in focus_keyword or keyword in topic for keyword in ["지원금", "정책", "보조금", "수당", "복지"]):
+    if any(keyword in focus_keyword or keyword in topic for keyword in ["지원금", "정책", "보조금", "수당", "복지", "적금", "대출", "예금", "금융", "이자", "청년"]):
         category_ids = [2]
     logger.info(f"카테고리 매핑: {category_ids}")
 
-    # 4. 이미지 처리 (멀티 이미지 전략)
+    # [검증 로직] 콘텐츠 품질 체크
+    if len(content) < 2000:
+        logger.warning(f"⚠️ 경고: 본문 길이가 부족합니다 ({len(content)}자). 2000자 이상 권장.")
+        # 강제 종료보다는 경고 후 진행 (테스트 목적)
+    
     # 4. 이미지 처리 (멀티 이미지 전략 V2 - Smart Metadata)
     images_data = post_data.get("images", [])
     
@@ -79,6 +92,11 @@ def main():
                 "alt": f"{focus_keyword} image {idx}",
                 "caption": f"{focus_keyword} 관련 이미지 {idx}"
             })
+
+    # [검증 로직] 이미지 수량 체크
+    if len(images_data) < 4:
+        logger.warning(f"⚠️ 경고: 이미지 수량이 부족합니다 ({len(images_data)}장). 4장 이상 권장.")
+        # 부족분 추가 생성 로직 (Advanced): 일단 경고만 로그
 
     featured_media_id = None
     body_image_urls = []
@@ -103,6 +121,7 @@ def main():
             img_title = title if idx == 0 else f"{focus_keyword}_{idx}"
             img_alt = img_meta.get("alt", f"{focus_keyword} image")
             img_caption = img_meta.get("caption", title)
+            # 썸네일 설명에만 Rank Math Description 적용
             img_desc = post_data.get("rank_math_description", "") if idx == 0 else ""
 
             upload_result = wp_client.upload_image(
@@ -176,8 +195,17 @@ def main():
         tag_ids = wp_client.get_or_create_tags(tags)
     
     meta_input = {}
+    
+    # [Rank Math 키워드 전략 수정] Focus Keyword는 **오직 메인 키워드 1개**만 설정 (User 요청 사항)
+    # 연관 키워드는 본문에 자연스럽게 녹아들어갔으므로 메타 데이터에는 메인 키워드 집중
+    rank_math_keywords = [focus_keyword]
+    # related_keywords = post_data.get("related_keywords", []) # 제거됨
+
+    combined_focus_keyword = focus_keyword
+    logger.info(f"Rank Math 적용 키워드 (1개 집중): {combined_focus_keyword}")
+    
     if "rank_math_focus_keyword" in post_data:
-        meta_input["rank_math_focus_keyword"] = post_data["rank_math_focus_keyword"]
+        meta_input["rank_math_focus_keyword"] = combined_focus_keyword
     if "rank_math_description" in post_data:
         meta_input["rank_math_description"] = post_data["rank_math_description"]
 

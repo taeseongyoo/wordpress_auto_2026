@@ -25,8 +25,8 @@ class ImageProcessor:
         
         full_prompt = (
             f"A high-quality, modern, and clean blog illustration about: {prompt}. "
-            "No text, no letters, no typography, no words inside the image. "
-            "Minimalist style, professional, infographic elements without text labels."
+            "ABSOLUTELY NO TEXT, NO LETTERS, NO CALCULATIONS, NO NUMBERS, NO CHARTS WITH DATA VALUES inside the image. "
+            "Use 3D isometric or flat vector illustration style, minimalist, abstract, professional, infographic elements without text labels."
         )
 
         try:
