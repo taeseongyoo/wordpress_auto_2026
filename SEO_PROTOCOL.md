@@ -50,14 +50,31 @@ images needed >= 4
 content length >= 2000 chars
 ```
 
+### 5. AI Smart Work Strategy (New 2026.02.12)
+
+- **Category**: `AI 스마트워크 & 수익화` (ID: **86**)
+- **Tags**: 8 Fixed Tags (Refer to PROGRESS.md).
+- **Image Protocol**:
+  - **Style**: Futuristic, Isometric 3D, No Text.
+  - **Alt Text**: Must include Focus Keyword + Description (No HTML).
+- **Link Protocol (Walled Garden)**:
+  - **External**: Minimum **5** High-Authority Links (Google, AWS, Gov, etc.).
+  - **Internal**: Minimum **5** Contextual Links (Chain Strategy).
+
 ## 🏆 Success Benchmarks
 
 - **Post 1 (Blog Monetization)**: Success
 - **Post 2 (YouTube Monetization)**: Success (Score 87)
+- **Post 3 (AI Smart Work)**: Success (Post ID 745)
 
 ## 📜 Version History & Roadmap
 
-### v1.1 (Current Stable - 2026.02.10)
+### v1.2 (Updated - 2026.02.12)
+
+- **AI Smart Work**: Added dedicated category and tag protocol.
+- **Image Alt Text**: Strict rule to strip HTML tags and include Focus Keyword.
+
+### v1.1 (Stable - 2026.02.10)
 
 - **Rank Math Score**: **87** (Achieved without manual English slug optimization).
 - **Tags**: 8 Auto-generated tags per post.

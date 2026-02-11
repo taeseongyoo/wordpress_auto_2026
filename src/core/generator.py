@@ -210,23 +210,39 @@ class ContentGenerator:
             )
             content = self._clean_html(response.choices[0].message.content)
             data = json.loads(content)
-            if "images" in data:
-                return data["images"]
-            elif isinstance(data, list):
-                return data
-            else:
-                for key, val in data.items():
-                    if isinstance(val, list):
-                        return val
-                return []
         except Exception as e:
             logger.error(f"이미지 메타데이터 생성 실패: {e}")
-            return [
-                {"type": "featured", "prompt": f"{topic}, high quality", "alt": topic, "caption": f"{topic} 대표 이미지"},
-                {"type": "body", "prompt": f"{topic} detail, infographic", "alt": f"{topic} 상세", "caption": f"{topic} 상세 설명"},
-                {"type": "body", "prompt": f"{topic} analysis, chart", "alt": f"{topic} 분석", "caption": f"{topic} 분석 도표"},
-                {"type": "body", "prompt": f"{topic} future, vision", "alt": f"{topic} 전망", "caption": f"{topic} 미래 전망"}
-            ]
+            return []
+            
+        # [Strict Enforcement] 키워드 누락 시 강제 주입
+        final_images = []
+        raw_images = data.get("images", []) if isinstance(data, dict) else data
+        
+        if not isinstance(raw_images, list):
+            raw_images = []
+            
+        for img in raw_images:
+            # 안전장치: 필수 키 확인
+            if "alt" not in img: img["alt"] = keyword
+            if "caption" not in img: img["caption"] = keyword
+            if "prompt" not in img: img["prompt"] = f"{keyword} illustration"
+            
+            # 1. Alt Text 강제
+            if keyword not in img["alt"]:
+                # 문맥 고려 없이 가장 앞에 '키워드: ' 형태로 붙임 (가장 확실함)
+                img["alt"] = f"{keyword}: {img['alt']}"
+                
+            # 2. Caption 강제
+            if keyword not in img["caption"]:
+                img["caption"] = f"{keyword} - {img['caption']}"
+                
+            # HTML 태그 제거 (혹시 모를 오염 방지)
+            img["alt"] = img["alt"].replace("<", "").replace(">", "")
+            img["caption"] = img["caption"].replace("<", "").replace(">", "")
+            
+            final_images.append(img)
+            
+        return final_images
 
     def _clean_html(self, text: str) -> str:
         """
@@ -328,14 +344,15 @@ class ContentGenerator:
           - 같은 단어 반복 대신 **'이 제도', '동 상품', '본 적금'** 등의 대명사나 **'청년 도약 지원책'** 같은 유의어를 적극 활용하세요.
           - 문맥에 맞지 않는 억지스러운 키워드 삽입은 절대 금지합니다.
         
-        [링크 전략 - 매우 중요]
-        1. **외부 링크 (글당 최소 1개, 최대 3개 / 이 섹션에서 1개 권장)**:
-           - 허용 대상: 대형 글로벌 기업(Netflix, Spotify, Google, Amazon 등), 정부기관(.go.kr, .gov), 공식 통계청
+        [링크 전략 - 가두리(Walled Garden) 전략]
+        1. **외부 링크 (글 전체 목표 5개 이상 / 이 섹션에서 1개 필수)**:
+           - **목표**: 독자가 신뢰할 수 있는 출처를 제공하여 체류 시간을 늘리고 SEO 점수를 확보.
+           - 허용 대상: 대형 글로벌 기업(Netflix, Spotify, Google, Amazon 등), 정부기관(.go.kr, .gov), 공식 통계청, 뉴스 기사.
            - ⚠️ 위키백과 금지! 산만하고 집중을 방해함.
            - 형식: <strong><a href="실제URL" target="_blank">출처명</a></strong>
            - 존재하지 않는 URL 사용 금지! 확실한 URL만 사용할 것.
         
-        2. **내부 링크**:
+        2. **내부 링크 (글 전체 목표 5개 이상)**:
            {internal_link_instruction}
         
         [가독성 (Mobile Optimized)]
@@ -343,7 +360,7 @@ class ContentGenerator:
         - 중요한 핵심 문장이나 키워드는 `<strong>` 태그로 **볼드 처리**하여 강조할 것.
         
         [분량 및 형식]
-        - 분량: 공백 포함 450자 내외 (너무 길지 않게 핵심만).
+        - 분량: 공백 포함 500자 내외 (풍부한 내용).
         - H2 태그에는 '{section_title}'을 그대로 쓸 것.
         - 금지: '[이미지 설명]', '그림 1' 같은 이미지 관련 텍스트 절대 금지.
         - 출력: 순수 HTML (마크다운 ``` 사용 금지).
