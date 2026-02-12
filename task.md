@@ -1,19 +1,19 @@
-# Policy & Support Solutions Campaign (2026)
+# 정책 & 지원금 솔루션 캠페인 (2026)
 
-- [x] **Setup & Configuration**
-  - [x] Review `SEO_PROTOCOL.md` for strict compliance.
-  - [x] Confirm Category ID (ID: 2).
-  - [x] Create `run_policy_campaign.py` for Post 1.
-- [x] **Execution**
-  - [x] Run `run_policy_campaign.py` (Post 1 Created).
-  - [x] **[CRITICAL]** Enforce "Fixed 5 Links" (Internal/External).
-  - [x] Generate **Post 2** with 5 verified internal links.
-- [x] **Verification**
-  - [x] Check Post 2 for 5 internal/external links.
-  - [x] Update `PROGRESS.md`.
-- [x] **Post 3 (K-Pass)**
-  - [x] Generate Post 3 with 5 fixed internal links.
-  - [x] **[CRITICAL]** Verify links are in **mid-content** (not at end).
-  - [x] Update `SEO_PROTOCOL.md` with mid-content rule.
-- [x] **Finalization**
-  - [x] Commit & Push to Git (v1.3 Locked).
+- [x] **설정 및 구성 (Setup & Configuration)**
+  - [x] `SEO_PROTOCOL.md` 프로토콜 준수 여부 검토.
+  - [x] 카테고리 ID 확인 및 확정 (ID: 2).
+  - [x] 포스트 1 생성을 위한 `run_policy_campaign.py` 작성.
+- [x] **실행 (Execution)**
+  - [x] `run_policy_campaign.py` 실행 (포스트 1 생성 완료).
+  - [x] **[중요]** "고정 5개 링크" 규칙 강제 적용 (내부/외부).
+  - [x] **포스트 2** 생성 및 내부 링크 5개 검증 완료.
+- [x] **검증 (Verification)**
+  - [x] 포스트 2의 내부/외부 링크 5개 확인.
+  - [x] `PROGRESS.md` 진행 상황 업데이트.
+- [x] **포스트 3 (K-패스)**
+  - [x] 포스트 3 생성 (고정 내부 링크 5개 적용).
+  - [x] **[중요]** 링크가 **본문 중간**에 위치했는지 검증 (섹션 끝 X).
+  - [x] `SEO_PROTOCOL.md`에 중간 배치 규칙 업데이트 및 한글화.
+- [x] **마무리 (Finalization)**
+  - [x] Git 커밋 및 푸시 (v1.3 프로토콜 확정 & 한글화 완료).

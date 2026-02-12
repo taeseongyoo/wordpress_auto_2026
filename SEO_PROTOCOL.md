@@ -1,104 +1,104 @@
-# WordPress SEO Automation Protocol (Verified 2026-02-10)
+# 워드프레스 자동화 SEO 프로토콜 (2026-02-13 인증)
 
 > [!IMPORTANT]
-> **PROTOCOL LOCKED**: This configuration achieved a **Rank Math Score of 87** (Excellent).
-> Do not modify the core logic below without explicit approval.
+> **프로토콜 잠금**: 이 설정은 **Rank Math 점수 87점(우수)** 을 달성했습니다.
+> 승인 없이 핵심 로직을 절대 수정하지 마십시오.
 
-## 📌 Core Principles
+## 📌 핵심 원칙
 
-This document outlines the verified strategy for generating high-quality, SEO-optimized blog posts using the `wordpress_auto_2026` system.
+이 문서는 `wordpress_auto_2026` 시스템을 사용하여 고품질 및 SEO 최적화된 블로그 포스트를 생성하기 위한 검증된 전략을 설명합니다.
 
-### 1. Keyword Strategy
+### 1. 키워드 전략
 
-- **Main Keyword**: 1 Focus Keyword (Rank Math Meta Field).
-- **Related Keywords**: 8 LSI Keywords generated and naturally woven into the content.
-- **Protocol**:
-  - Focus Keyword Field: **ONLY** the Main Keyword.
-  - Content: Must naturally include related keywords.
+- **메인 키워드**: 1개의 핵심 키워드 (Rank Math 메타 필드용).
+- **연관 키워드**: 8개의 LSI 키워드를 생성하여 본문에 자연스럽게 배치.
+- **프로토콜**:
+  - 핵심 키워드 필드: 오직 **1개의 메인 키워드**만 입력.
+  - 본문: 연관 키워드를 문맥에 맞게 자연스럽게 포함.
 
-### 2. Content Quality & Quantity
+### 2. 콘텐츠 품질 및 분량
 
-- **Length**: Minimum **2,000 characters** (Actual results: ~9,000-10,000 chars).
-- **Structure**: 6~8 H2 Sections + Intro + Conclusion + FAQ.
-- **Readability**: Short paragraphs (2-3 sentences), Bullet points, Bold highlights.
+- **길이**: 최소 **2,000자** 이상 (실제 평균: 약 9,000~10,000자).
+- **구조**: 6~8개의 H2 섹션 + 서론 + 결론 + FAQ.
+- **가독성**: 짧은 문단(2~3문장), 글머리 기호 사용, 볼드 처리로 강조.
 
-### 3. Visual Strategy
+### 3. 시각적 전략
 
-- **Quantity**: Minimum **4 Images** (1 Thumbnail + 3 Body Images).
-- **Placement**:
-  - Thumbnail: Before Title.
-  - Body Images: After H2 headers (distributed evenly).
-- **Metadata**: All images must have Alt Text and Captions containing the Focus Keyword.
+- **수량**: 최소 **4장** (썸네일 1장 + 본문 이미지 3장).
+- **배치**:
+  - 썸네일: 제목 앞.
+  - 본문 이미지: H2 헤더 뒤에 균등하게 배치.
+- **메타데이터**: 모든 이미지의 Alt 텍스트와 캡션에 핵심 키워드 포함 필수.
 
-### 4. Linking Strategy
+### 4. 링크 전략
 
-- **Internal Links**: Fetch 5 recent posts and distribute them throughout the content and in a "Related Posts" section at the bottom.
-- **External Links**: 1-3 high-authority links (Gov, Big Tech, Statistics) per post.
+- **내부 링크**: 최신 포스트 5개를 가져와 본문과 하단 "관련 포스트" 섹션에 분산 배치.
+- **외부 링크**: 포스트당 1~3개의 고권위 링크(정부기관, 대기업, 통계청 등) 사용.
 
-## ✅ Verified Code Logic
+## ✅ 검증된 코드 로직
 
-The following logic has been "memorized" in `src/main.py` and `src/core/generator.py`:
+다음 로직은 `src/main.py` 및 `src/core/generator.py`에 "기억"되어 있습니다:
 
 ```python
-# [Verified] Rank Math Focus Keyword
-rank_math_focus_keyword = focus_keyword # Single Keyword Only
+# [검증됨] Rank Math 핵심 키워드
+rank_math_focus_keyword = focus_keyword # 단일 키워드만 허용
 
-# [Verified] Image Generation
+# [검증됨] 이미지 생성
 images needed >= 4
 
-# [Verified] Content Validation
+# [검증됨] 콘텐츠 유효성 검사
 content length >= 2000 chars
 ```
 
-### 5. AI Smart Work Strategy (New 2026.02.12)
+### 5. AI 스마트워크 전략 (2026.02.12 신설)
 
-- **Category**: `AI 스마트워크 & 수익화` (ID: **86**)
-- **Tags**: 8 Fixed Tags (Refer to PROGRESS.md).
-- **Image Protocol**:
-  - **Style**: Futuristic, Isometric 3D, No Text.
-  - **Alt Text**: Must include Focus Keyword + Description (No HTML).
-- **Link Protocol (Walled Garden)**:
-  - **External**: Minimum **5** High-Authority Links (Google, AWS, Gov, etc.).
-  - **Internal**: Minimum **5** Contextual Links (Chain Strategy).
-    - **Position Rule**: MUST be inserted **in the middle** of sentences/paragraphs.
-    - **Prohibition**: DO NOT place links at the end of sections as "See also".
+- **카테고리**: `AI 스마트워크 & 수익화` (ID: **86**)
+- **태그**: 8개 고정 태그 (PROGRESS.md 참조).
+- **이미지 프로토콜**:
+  - **스타일**: 미래지향적, 아이소메트릭 3D, 텍스트 없음.
+  - **Alt 텍스트**: 반드시 HTML 태그 없이 핵심 키워드 + 설명을 포함.
+- **링크 프로토콜 (가두리 전략)**:
+  - **외부 링크**: 최소 **5개**의 고권위 링크 (Google, AWS, 정부기관 등).
+  - **내부 링크**: 최소 **5개**의 문맥적 링크 (체인 전략).
+    - **위치 규칙**: 반드시 문단 **중간**에 자연스럽게 삽입해야 함. (흐름 중시, **중복 없음**)
+    - **금지사항**: 섹션 끝에 "참고: [링크]" 형식으로 배치 금지.
 
-## 🏆 Success Benchmarks
+## 🏆 성공 사례 (벤치마크)
 
-- **Post 1 (Blog Monetization)**: Success
-- **Post 2 (YouTube Monetization)**: Success (Score 87)
-- **Post 3 (AI Smart Work)**: Success (Post ID 745)
+- **포스트 1 (블로그 수익화)**: 성공
+- **포스트 2 (유튜브 수익화)**: 성공 (점수 87점)
+- **포스트 3 (AI 스마트워크)**: 성공 (Post ID 745)
 
-## 📜 Version History & Roadmap
+## 📜 버전 기록 및 로드맵
 
-### v1.3 (Confirmed - 2026.02.13)
+### v1.3 (확정 - 2026.02.13)
 
-- **Link Strategy (Golden Rule)**:
-  - **Internal**: 5 fixed links per post. **MUST be inserted in the middle of paragraphs** (Natural flow, No repetitions).
-  - **External**: Unique authority link per section. (No repetitions).
-- **Architecture**:
-  - `generator.py`: Enforced "Mid-Content" prompt injection.
-  - `PROGRESS.md`: Korean localization complete.
+- **링크 전략 (황금률)**:
+  - **내부 링크**: 포스트당 5개 고정. **반드시 문단 중간에 삽입** (자연스러운 흐름, 중복 없음).
+  - **외부 링크**: 섹션별 고유 출처 사용 (중복 없음).
+- **아키텍처**:
+  - `generator.py`: "중간 배치(Mid-Content)" 프롬프트 강제 주입.
+  - `PROGRESS.md`: 완전 한글화 완료.
 
-### v1.2 (Updated - 2026.02.12)
+### v1.2 (업데이트 - 2026.02.12)
 
-- **AI Smart Work**: Added dedicated category and tag protocol.
-- **Image Alt Text**: Strict rule to strip HTML tags and include Focus Keyword.
+- **AI 스마트워크**: 전용 카테고리 및 태그 프로토콜 추가.
+- **이미지 Alt 텍스트**: HTML 태그 제거 및 핵심 키워드 포함 규칙 강화.
 
-### v1.1 (Stable - 2026.02.10)
+### v1.1 (안정화 - 2026.02.10)
 
-- **Rank Math Score**: **87** (Achieved without manual English slug optimization).
-- **Tags**: 8 Auto-generated tags per post.
-- **Links**:
-  - External: 5+ High-authority links (Gov, Tech Giants).
-  - Internal: 3+ Contextual links + Related Posts section.
-- **Components**:
-  - Clickable FAQ (HTML `<details>`).
-  - DALL-E 3 Image Generation (1024x1024, WebP).
+- **Rank Math 점수**: **87점** (수동 영문 슬러그 최적화 없이 달성).
+- **태그**: 포스트당 8개 자동 생성.
+- **링크**:
+  - 외부: 5개 이상의 고권위 링크 (정부, 대기업).
+  - 내부: 3개 이상의 문맥적 링크 + 관련 포스트 섹션.
+- **컴포넌트**:
+  - 클릭 가능한 FAQ (HTML `<details>`).
+  - DALL-E 3 이미지 생성 (1024x1024, WebP).
 
-### 🚀 Future Roadmap (Tier 2 Upgrade)
+### 🚀 향후 로드맵 (Tier 2 업그레이드)
 
-- **Image Generation**: Switch to **Midjourney** (via NanoBanana Pro API) for higher artistic quality.
+- **이미지 생성**: 더 높은 예술적 품질을 위해 **Midjourney** (NanoBanana Pro API 경유)로 전환.
 - **SEO**:
-  - Automated English Slug Translation.
-  - JSON-LD Schema Auto-injection.
+  - 영문 슬러그 자동 번역 기능.
+  - JSON-LD 스키마 자동 주입.
