@@ -74,7 +74,7 @@ content length >= 2000 chars
 ### v1.3 (Confirmed - 2026.02.13)
 
 - **Link Strategy (Golden Rule)**:
-  - **Internal**: 5 fixed links per post. **MUST be inserted in the middle of paragraphs** (Natural flow).
+  - **Internal**: 5 fixed links per post. **MUST be inserted in the middle of paragraphs** (Natural flow, No repetitions).
   - **External**: Unique authority link per section. (No repetitions).
 - **Architecture**:
   - `generator.py`: Enforced "Mid-Content" prompt injection.
