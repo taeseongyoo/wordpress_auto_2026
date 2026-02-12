@@ -99,18 +99,35 @@ class ContentGenerator:
             total_sections = len(sections)
             links_per_section = 1 # 섹션당 1개 정도 배분
             
+            # [신규] 외부 링크 계획 (각 섹션별 고유 출처)
+            logger.info("4. 외부 링크 및 내부 링크 전략 수립 중...")
+            external_link_plans = self._plan_external_links(sections)
+            
             import random
-            random.shuffle(internal_links) # 링크 순서 섞기
+            random.shuffle(internal_links) # 내부 링크 순서 섞기 (중복 방지)
+            
+            body_html = ""
+            total_sections = len(sections)
             
             for idx, section_title in enumerate(sections):
-                logger.info(f"4. 섹션 생성 중 [{idx+1}/{total_sections}]: {section_title}")
+                logger.info(f"5. 섹션 생성 중 [{idx+1}/{total_sections}]: {section_title}")
                 
-                # 현재 섹션에 할당할 링크 계산
-                start_idx = idx * links_per_section
-                end_idx = start_idx + links_per_section
-                section_links = internal_links[start_idx:end_idx] if internal_links else []
+                # 내부 링크 1개 할당 (순환)
+                current_internal_link = []
+                if internal_links:
+                    link_idx = idx % len(internal_links)
+                    current_internal_link = [internal_links[link_idx]]
                 
-                section_content = self._clean_html(self._generate_section(topic, section_title, focus_keyword, section_links))
+                # 외부 링크 힌트 1개 할당
+                current_external_hint = None
+                if idx < len(external_link_plans):
+                    current_external_hint = external_link_plans[idx]
+                
+                section_content = self._clean_html(self._generate_section(
+                    topic, section_title, focus_keyword, 
+                    internal_links=current_internal_link, 
+                    external_link_hint=current_external_hint
+                ))
                 body_html += section_content + "\n\n"
 
             # 5. 결론 및 FAQ 생성
@@ -318,19 +335,70 @@ class ContentGenerator:
         )
         return response.choices[0].message.content
 
-    def _generate_section(self, topic: str, section_title: str, keyword: str, links: list = None) -> str:
+    def _plan_external_links(self, sections: list) -> list:
+        """
+        각 섹션별로 사용할 고유한 외부 링크 주제를 계획합니다. (중복 방지)
+        """
+        section_titles = ", ".join(sections)
+        prompt = f"""
+        블로그 포스트의 각 섹션에 삽입할 '외부 링크(External Link)' 주제를 계획하세요.
+        
+        [섹션 목록]
+        {section_titles}
+        
+        [요구사항]
+        1. 각 섹션마다 **서로 다른** 공신력 있는 외부 출처를 1개씩 지정하세요.
+        2. 출처 예시: 
+           - 정부 사이트 (.go.kr), 통계청, 법제처
+           - 대형 언론사 (연합뉴스, KBS 등)
+           - 구글 학술 검색, 네이버 지식백과 (위키백과 제외)
+           - 관련 협회나 공식 기관
+        3. **절대로** 같은 사이트를 반복해서 추천하지 마세요. (예: 모든 섹션에 '복지로' 링크 금지)
+        4. 출력 형식: JSON 리스트 ["섹션1 출처: 통계청(청년고용동향)", "섹션2 출처: 법제처(관련 법령)", ...]
+        """
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+            data = json.loads(self._clean_html(response.choices[0].message.content))
+            links = data.get("links", [])
+            # 만약 키가 다르면 값만 리스트로 추출
+            if not links:
+                links = list(data.values())[0] if data else []
+            return links
+        except Exception as e:
+            logger.error(f"외부 링크 계획 실패: {e}")
+            return [f"관련 공신력 있는 출처 {i+1}" for i in range(len(sections))]
+
+    def _generate_section(self, topic: str, section_title: str, keyword: str, 
+                          internal_links: list = None, external_link_hint: str = None) -> str:
         
         # 내부 링크: 오직 검증된 URL만 사용 (404 방지)
         internal_link_instruction = "[내부 링크 없음]"
-        if links:
-            link_list_str = "\n".join([f"- URL: {l['link']}, 제목: {l['title']}" for l in links])
+        if internal_links:
+            # 리스트가 들어로면 그 중 하나를 *반드시* 쓰도록 유도
+            l = internal_links[0] # 첫번째 것 사용 (Generator 메인 루프에서 1개씩 잘라서 줌)
             internal_link_instruction = f"""
-            [내부 링크 - 필독]
-            ⚠️ 아래 제공된 URL만 사용하세요. 절대로 URL을 상상하거나 만들어내지 마세요!
-            - 검증된 링크:
-            {link_list_str}
-            - 사용법: 문맥에 맞게 1개만 자연스럽게 삽입. (예: "더 자세한 내용은 <a href='...'>[제목]</a>에서 확인하세요")
-            - 중요: 위 목록에 없는 URL은 절대 사용 금지! 404 에러 발생함.
+            [내부 링크 - 필수 삽입 (문단 중간)]
+            - 제목: {l['title']}
+            - URL: {l['link']}
+            - **[매우 중요] 위치 규칙**: 
+              - 절대로 섹션의 맨 마지막에 "참고하세요" 식으로 붙이지 마세요.
+              - **반드시** 설명하는 문장의 중간이나 끝에 자연스럽게 녹여내세요.
+              - 예시 (O): "...이때 **<a href='{l['link']}' target='_blank'>{l['title']}</a>**를 활용하면 더 효율적으로..."
+              - 예시 (X): "...입니다. \n\n 관련 글: {l['title']}" (이런 식의 하단 배치는 금지!)
+            - 앵커 텍스트는 유동적으로 변형 가능하나 URL은 절대 변경 금지.
+            """
+
+        # 외부 링크 힌트
+        ext_link_msg = ""
+        if external_link_hint:
+            ext_link_msg = f"""
+            - **권장 외부 링크 출처**: {external_link_hint}
+            - 해당 주제와 관련된 구체적인 페이지를 찾아 링크를 거세요. (예: '{external_link_hint}' 검색 결과 또는 메인 페이지)
+            - 형식: <strong><a href="https://..." target="_blank">[{external_link_hint} 바로가기]</a></strong>
             """
 
         prompt = f"""
@@ -345,14 +413,13 @@ class ContentGenerator:
           - 문맥에 맞지 않는 억지스러운 키워드 삽입은 절대 금지합니다.
         
         [링크 전략 - 가두리(Walled Garden) 전략]
-        1. **외부 링크 (글 전체 목표 5개 이상 / 이 섹션에서 1개 필수)**:
-           - **목표**: 독자가 신뢰할 수 있는 출처를 제공하여 체류 시간을 늘리고 SEO 점수를 확보.
-           - 허용 대상: 대형 글로벌 기업(Netflix, Spotify, Google, Amazon 등), 정부기관(.go.kr, .gov), 공식 통계청, 뉴스 기사.
+        1. **외부 링크 (이 섹션 전용)**:
+           {ext_link_msg}
+           - 다른 섹션과 중복되지 않는 **고유한 출처**를 사용하세요.
            - ⚠️ 위키백과 금지! 산만하고 집중을 방해함.
-           - 형식: <strong><a href="실제URL" target="_blank">출처명</a></strong>
            - 존재하지 않는 URL 사용 금지! 확실한 URL만 사용할 것.
         
-        2. **내부 링크 (글 전체 목표 5개 이상)**:
+        2. **내부 링크 (이 섹션 전용)**:
            {internal_link_instruction}
         
         [가독성 (Mobile Optimized)]

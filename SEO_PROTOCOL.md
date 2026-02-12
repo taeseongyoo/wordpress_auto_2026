@@ -60,6 +60,8 @@ content length >= 2000 chars
 - **Link Protocol (Walled Garden)**:
   - **External**: Minimum **5** High-Authority Links (Google, AWS, Gov, etc.).
   - **Internal**: Minimum **5** Contextual Links (Chain Strategy).
+    - **Position Rule**: MUST be inserted **in the middle** of sentences/paragraphs.
+    - **Prohibition**: DO NOT place links at the end of sections as "See also".
 
 ## 🏆 Success Benchmarks
 
@@ -68,6 +70,15 @@ content length >= 2000 chars
 - **Post 3 (AI Smart Work)**: Success (Post ID 745)
 
 ## 📜 Version History & Roadmap
+
+### v1.3 (Confirmed - 2026.02.13)
+
+- **Link Strategy (Golden Rule)**:
+  - **Internal**: 5 fixed links per post. **MUST be inserted in the middle of paragraphs** (Natural flow).
+  - **External**: Unique authority link per section. (No repetitions).
+- **Architecture**:
+  - `generator.py`: Enforced "Mid-Content" prompt injection.
+  - `PROGRESS.md`: Korean localization complete.
 
 ### v1.2 (Updated - 2026.02.12)
 
