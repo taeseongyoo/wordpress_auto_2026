@@ -1,5 +1,7 @@
 import json
 import os
+import re
+import requests
 from openai import OpenAI
 from src.config.settings import Config
 from src.utils.logger import get_logger
@@ -155,6 +157,11 @@ class ContentGenerator:
             # 7. 전체 병합
             full_content = f"{intro_html}\n\n{body_html}\n\n{internal_link_html}\n\n{faq_html}"
             
+            # [신규] 외부 링크 검증 및 수정
+            logger.info("6. 외부 링크 (404 에러 등) 유효성 검증 중...")
+            internal_urls = [link.get('link', '') for link in internal_links] if internal_links else []
+            full_content = self._validate_and_fix_external_links(full_content, internal_urls)
+            
             # 태그 선택
             raw_tags = self.verified_tags.split(", ")
             import random
@@ -182,6 +189,44 @@ class ContentGenerator:
             import traceback
             logger.error(traceback.format_exc())
             return None
+
+    def _validate_and_fix_external_links(self, html_content: str, internal_urls: list) -> str:
+        """
+        HTML 내의 외부 링크 유효성을 검사하고, 404 에러 등 연결 실패 시 
+        링크(<a> 태그)를 제거하고 일반 텍스트로 치환합니다.
+        """
+        logger.info("외부 링크 유효성 검증 시작...")
+        
+        # <a href="...">text</a> 패턴 찾기
+        pattern = r'<a\s+[^>]*href=["\'](http[s]?://[^"\']+)["\'][^>]*>(.*?)</a>'
+        
+        def replacer(match):
+            full_tag = match.group(0)
+            url = match.group(1)
+            text = match.group(2)
+            
+            # 내부 링크는 패스
+            if internal_urls and any(internal_url in url for internal_url in internal_urls):
+                return full_tag
+                
+            try:
+                headers = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+                # GET 요청으로 빠르게 헤더만 받아옴 (stream=True)
+                response = requests.get(url, headers=headers, timeout=5, stream=True)
+                response.close()
+                
+                if response.status_code >= 400:
+                    logger.warning(f"⚠️ 외부 링크 연결 에러(Status {response.status_code}): {url} -> 텍스트로 변환")
+                    return text # <a> 태그 제거
+                return full_tag
+            except Exception as e:
+                logger.warning(f"⚠️ 외부 링크 접속 불가/타임아웃 ({type(e).__name__}): {url} -> 텍스트로 변환")
+                return text
+
+        fixed_html = re.sub(pattern, replacer, html_content, flags=re.IGNORECASE | re.DOTALL)
+        return fixed_html
 
     def _generate_image_metadata(self, topic: str, title: str, sections: list, keyword: str) -> list:
         """
